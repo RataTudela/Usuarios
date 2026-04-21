@@ -13,7 +13,7 @@ public class DisponibilidadController {
     @Autowired
     private DisponibilidadService service;
 
-    @GetMapping("/")
+    @GetMapping
     public List<Disponibilidad> listarTodo() {
         return service.listarTodas();
     }

@@ -2,20 +2,18 @@ package com.example.usuarios.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.time.LocalDate;
 
 @Entity
-@Table(name = "disponibilidades")
+@Table(name = "carga")
 @Data
-public class Disponibilidad {
+public class CargaTrabajo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_disponibilidad;
+    private Long id_carga;
     
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false) 
     private Usuario usuario;    
-    private LocalDate fechaInicio;
-    private LocalDate fechaFin;
-    private String motivo;
+    private Integer horas_asignadas;
+    private String periodo;
 }
