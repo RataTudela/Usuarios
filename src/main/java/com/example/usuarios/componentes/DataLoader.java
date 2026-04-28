@@ -8,9 +8,10 @@ import com.example.usuarios.repository.DisponibilidadRepository;
 import com.example.usuarios.repository.UsuarioRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.Optional;
 
 @Component
 public class DataLoader implements CommandLineRunner {
@@ -28,47 +29,58 @@ public class DataLoader implements CommandLineRunner {
     }
 
     @Override
+    @Transactional 
     public void run(String... args) throws Exception {
-        disponibilidadRepository.deleteAll();
-        cargaRepository.deleteAll();
-        usuarioRepository.deleteAll();
+        
+        System.out.println(">> Verificando datos en Neon...");
 
-        Usuario juan = new Usuario();
-        juan.setNombre("Juan Perez");
-        juan.setEmail("juan.perez@innovatech.com");
-        juan.setContraseña("Informatica.25");
-        juan.setRol("CONSULTOR");
-        juan.setEstado("ACTIVO");
+        String emailJuan = "juan.perez@innovatech.com";
+        if (usuarioRepository.findByEmail(emailJuan).isEmpty()) {
+            Usuario juan = new Usuario();
+            juan.setNombre("Juan Perez");
+            juan.setEmail(emailJuan);
+            juan.setContraseña("Informatica.25");
+            juan.setRol("CONSULTOR");
+            juan.setEstado("ACTIVO");
+            usuarioRepository.save(juan);
 
-        Usuario maria = new Usuario();
-        maria.setNombre("Maria Garcia");
-        maria.setEmail("maria.garcia@innovatech.com");
-        maria.setContraseña("Informatica.25");
-        maria.setRol("SENIOR");
-        maria.setEstado("ACTIVO");
+            CargaTrabajo cargaJuan = new CargaTrabajo();
+            cargaJuan.setUsuario(juan);
+            cargaJuan.setHoras_asignadas(25);
+            cargaJuan.setPeriodo("Abril 2026");
+            cargaRepository.save(cargaJuan);
+            
+            System.out.println(">> Usuario Juan creado.");
+        }
 
-        usuarioRepository.saveAll(Arrays.asList(juan, maria));
+        String emailMaria = "maria.garcia@innovatech.com";
+        Optional<Usuario> mariaOpt = usuarioRepository.findByEmail(emailMaria);
+        
+        if (mariaOpt.isEmpty()) {
+            Usuario maria = new Usuario();
+            maria.setNombre("Maria Garcia");
+            maria.setEmail(emailMaria);
+            maria.setContraseña("Informatica.25");
+            maria.setRol("SENIOR");
+            maria.setEstado("ACTIVO");
+            usuarioRepository.save(maria);
 
-        CargaTrabajo cargaJuan = new CargaTrabajo();
-        cargaJuan.setUsuario(juan);
-        cargaJuan.setHoras_asignadas(25);
-        cargaJuan.setPeriodo("Abril 2026");
+            CargaTrabajo cargaMaria = new CargaTrabajo();
+            cargaMaria.setUsuario(maria);
+            cargaMaria.setHoras_asignadas(35);
+            cargaMaria.setPeriodo("Abril 2026");
+            cargaRepository.save(cargaMaria);
 
-        CargaTrabajo cargaMaria = new CargaTrabajo();
-        cargaMaria.setUsuario(maria);
-        cargaMaria.setHoras_asignadas(35);
-        cargaMaria.setPeriodo("Abril 2026");
+            Disponibilidad vacacionesMaria = new Disponibilidad();
+            vacacionesMaria.setUsuario(maria);
+            vacacionesMaria.setFechaInicio(LocalDate.of(2026, 5, 1));
+            vacacionesMaria.setFechaFin(LocalDate.of(2026, 5, 15));
+            vacacionesMaria.setMotivo("Vacaciones anuales");
+            disponibilidadRepository.save(vacacionesMaria);
+            
+            System.out.println(">> Usuario Maria creado.");
+        }
 
-        cargaRepository.saveAll(Arrays.asList(cargaJuan, cargaMaria));
-
-        Disponibilidad vacacionesMaria = new Disponibilidad();
-        vacacionesMaria.setUsuario(maria);
-        vacacionesMaria.setFechaInicio(LocalDate.of(2026, 5, 1));
-        vacacionesMaria.setFechaFin(LocalDate.of(2026, 5, 15));
-        vacacionesMaria.setMotivo("Vacaciones anuales");
-
-        disponibilidadRepository.save(vacacionesMaria);
-
-        System.out.println(">> DataLoader: Datos iniciales cargados con éxito.");
+        System.out.println(">> DataLoader: Proceso finalizado sin borrar datos existentes.");
     }
 }
