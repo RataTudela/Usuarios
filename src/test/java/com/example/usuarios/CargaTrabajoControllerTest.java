@@ -47,7 +47,7 @@ public class CargaTrabajoControllerTest {
 
         cargaPrueba = new CargaTrabajo();
         cargaPrueba.setHoras_asignadas(20);
-        cargaPrueba.setPeriodo("2024-Q1");
+        cargaPrueba.setNombreTarea("Desarrollo de API"); 
         cargaPrueba.setUsuario(usuarioPrueba);
     }
 
@@ -57,7 +57,7 @@ public class CargaTrabajoControllerTest {
 
         mockMvc.perform(get("/api/usuarios/carga_trabajo"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].periodo").value("2024-Q1"));
+                .andExpect(jsonPath("$[0].nombreTarea").value("Desarrollo de API"));
     }
 
     @Test
@@ -68,7 +68,8 @@ public class CargaTrabajoControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(cargaPrueba)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.horas_asignadas").value(20));
+                .andExpect(jsonPath("$.horas_asignadas").value(20))
+                .andExpect(jsonPath("$.nombreTarea").value("Desarrollo de API"));
     }
 
     @Test

@@ -1,17 +1,18 @@
 package com.example.usuarios.componentes;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.usuarios.model.CargaTrabajo;
 import com.example.usuarios.model.Disponibilidad;
 import com.example.usuarios.model.Usuario;
 import com.example.usuarios.repository.CargaTrabajoRepository;
 import com.example.usuarios.repository.DisponibilidadRepository;
 import com.example.usuarios.repository.UsuarioRepository;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.Optional;
 
 @Component
 public class DataLoader implements CommandLineRunner {
@@ -47,10 +48,10 @@ public class DataLoader implements CommandLineRunner {
             CargaTrabajo cargaJuan = new CargaTrabajo();
             cargaJuan.setUsuario(juan);
             cargaJuan.setHoras_asignadas(25);
-            cargaJuan.setPeriodo("Abril 2026");
+            cargaJuan.setNombreTarea("Mantenimiento de Servidores (Infraestructura)");
             cargaRepository.save(cargaJuan);
             
-            System.out.println(">> Usuario Juan creado.");
+            System.out.println(">> Usuario Juan creado con tarea asignada.");
         }
 
         String emailMaria = "maria.garcia@innovatech.com";
@@ -68,7 +69,7 @@ public class DataLoader implements CommandLineRunner {
             CargaTrabajo cargaMaria = new CargaTrabajo();
             cargaMaria.setUsuario(maria);
             cargaMaria.setHoras_asignadas(35);
-            cargaMaria.setPeriodo("Abril 2026");
+            cargaMaria.setNombreTarea("Desarrollo Frontend - Dashboard Clientes");
             cargaRepository.save(cargaMaria);
 
             Disponibilidad vacacionesMaria = new Disponibilidad();
@@ -78,9 +79,8 @@ public class DataLoader implements CommandLineRunner {
             vacacionesMaria.setMotivo("Vacaciones anuales");
             disponibilidadRepository.save(vacacionesMaria);
             
-            System.out.println(">> Usuario Maria creado.");
+            System.out.println(">> Usuario Maria creado con tarea y disponibilidad.");
         }
 
-        System.out.println(">> DataLoader: Proceso finalizado sin borrar datos existentes.");
     }
 }

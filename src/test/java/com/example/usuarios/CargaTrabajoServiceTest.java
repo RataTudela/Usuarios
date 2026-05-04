@@ -1,20 +1,22 @@
 package com.example.usuarios; 
 
-import com.example.usuarios.model.CargaTrabajo;
-import com.example.usuarios.service.CargaTrabajoService; 
-import com.example.usuarios.repository.CargaTrabajoRepository;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import com.example.usuarios.model.CargaTrabajo;
+import com.example.usuarios.repository.CargaTrabajoRepository;
+import com.example.usuarios.service.CargaTrabajoService;
 
 @ExtendWith(MockitoExtension.class)
 public class CargaTrabajoServiceTest {
@@ -32,18 +34,18 @@ public class CargaTrabajoServiceTest {
         cargaPrueba = new CargaTrabajo();
         cargaPrueba.setId_carga(1L); 
         cargaPrueba.setHoras_asignadas(20);
-        cargaPrueba.setPeriodo("2024-Q1");
+        cargaPrueba.setNombreTarea("Desarrollo Backend");
     }
 
     @Test
     void testSumarHoras_Exito() {
-        Mockito.when(repository.findByUsuarioIdAndPeriodo(1L, "2024-Q1"))
+        Mockito.when(repository.findByUsuarioIdAndNombreTarea(1L, "Desarrollo Backend"))
                .thenReturn(cargaPrueba);
         
         Mockito.when(repository.save(any(CargaTrabajo.class)))
                .thenAnswer(i -> i.getArguments()[0]);
 
-        CargaTrabajo resultado = service.sumarHoras(1L, "2024-Q1", 10);
+        CargaTrabajo resultado = service.sumarHoras(1L, "Desarrollo Backend", 10);
 
         assertNotNull(resultado);
         assertEquals(30, resultado.getHoras_asignadas());
@@ -52,10 +54,10 @@ public class CargaTrabajoServiceTest {
 
     @Test
     void testSumarHoras_NoExiste() {
-        Mockito.when(repository.findByUsuarioIdAndPeriodo(1L, "2024-Q2"))
+        Mockito.when(repository.findByUsuarioIdAndNombreTarea(1L, "Tarea Inexistente"))
                .thenReturn(null);
 
-        CargaTrabajo resultado = service.sumarHoras(1L, "2024-Q2", 10);
+        CargaTrabajo resultado = service.sumarHoras(1L, "Tarea Inexistente", 10);
 
         assertNull(resultado);
         Mockito.verify(repository, Mockito.never()).save(any());

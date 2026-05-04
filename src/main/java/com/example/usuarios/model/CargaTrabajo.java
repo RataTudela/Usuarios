@@ -15,5 +15,5 @@ public class CargaTrabajo {
     @JoinColumn(name = "id_usuario", nullable = false) 
     private Usuario usuario;    
     private Integer horas_asignadas;
-    private String periodo;
+    private String nombreTarea;
 }
