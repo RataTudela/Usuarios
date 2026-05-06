@@ -1,8 +1,17 @@
 package com.example.usuarios.model;
 
-import jakarta.persistence.*;
-import lombok.Data;
 import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.Data;
 
 @Entity
 @Table(name = "disponibilidades")
@@ -13,7 +22,8 @@ public class Disponibilidad {
     private Long id_disponibilidad;
     
     @ManyToOne
-    @JoinColumn(name = "id_usuario", nullable = false) 
+    @JoinColumn(name = "id_usuario")
+    @JsonIgnore 
     private Usuario usuario;    
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
