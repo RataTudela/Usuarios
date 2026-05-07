@@ -6,8 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.usuarios.model.CargaTrabajo;
+import com.example.usuarios.model.Usuario;
 import com.example.usuarios.repository.CargaTrabajoRepository;
-
+import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CargaTrabajoService {
 
@@ -30,8 +31,15 @@ public class CargaTrabajoService {
         return repository.findById(id).orElse(null); 
     }
 
+    @Transactional
     public void eliminar(Long id) {
-        repository.deleteById(id); 
+    CargaTrabajo carga = repository.findById(id)
+        .orElseThrow(() -> new RuntimeException("ID no encontrado"));
+    Usuario usuario = carga.getUsuario();
+    if (usuario != null) {
+        usuario.getCargasTrabajo().remove(carga);
+    }
+    repository.delete(carga);
     }
     
     public List<CargaTrabajo> buscarPorNombreTarea(String nombreTarea) {
