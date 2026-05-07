@@ -2,6 +2,8 @@ package com.example.usuarios.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -25,8 +27,11 @@ public class Usuario {
     private String rol; 
     private String estado; 
     
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private List<Disponibilidad> disponibilidades;
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<CargaTrabajo> cargas;
+    @JsonManagedReference
+    private List<CargaTrabajo> cargasTrabajo;
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference 
+    private List<Disponibilidad> disponibilidades;
+
 }

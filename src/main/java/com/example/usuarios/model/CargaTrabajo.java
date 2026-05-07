@@ -1,6 +1,6 @@
 package com.example.usuarios.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,7 +21,7 @@ public class CargaTrabajo {
     
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false) 
-    @JsonIgnore
+    @JsonBackReference
     private Usuario usuario;    
     private Integer horas_asignadas;
     private String nombreTarea;
