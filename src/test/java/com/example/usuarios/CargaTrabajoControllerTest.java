@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -98,5 +99,33 @@ public class CargaTrabajoControllerTest {
 
         mockMvc.perform(delete("/api/usuarios/carga_trabajo/1"))
                 .andExpect(status().isNoContent());
+    }
+    @Test
+    void testBuscarPorUsuario() throws Exception {
+        Mockito.when(cargaTrabajoService.buscarPorUsuario(1L)).thenReturn(Arrays.asList(cargaPrueba));
+
+        mockMvc.perform(get("/api/usuarios/carga_trabajo/usuario/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].nombreTarea").value("Desarrollo de API"));
+    }
+
+    @Test
+    void testModificar_Exito() throws Exception {
+        Mockito.when(cargaTrabajoService.buscarPorId(1L)).thenReturn(cargaPrueba);
+        Mockito.when(cargaTrabajoService.guardar(any(CargaTrabajo.class))).thenReturn(cargaPrueba);
+        mockMvc.perform(put("/api/usuarios/carga_trabajo/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(cargaPrueba)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nombreTarea").value("Desarrollo de API"));
+    }
+
+    @Test
+    void testModificar_NoEncontrado() throws Exception {
+        Mockito.when(cargaTrabajoService.buscarPorId(99L)).thenReturn(null);
+        mockMvc.perform(put("/api/usuarios/carga_trabajo/99")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(cargaPrueba)))
+                .andExpect(status().isNotFound());
     }
 }
