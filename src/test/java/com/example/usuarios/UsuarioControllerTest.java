@@ -50,7 +50,6 @@ public class UsuarioControllerTest {
         usuarioPrueba.setEstado("ACTIVO");
     }
 
-    // 1. TEST LISTAR
     @Test
     void testListar() throws Exception {
         Mockito.when(usuarioService.listarTodos()).thenReturn(Arrays.asList(usuarioPrueba));
@@ -59,7 +58,6 @@ public class UsuarioControllerTest {
                 .andExpect(jsonPath("$[0].nombre").value("Benjamon"));
     }
 
-    // 2. TEST OBTENER POR ID
     @Test
     void testObtenerPorId() throws Exception {
         Mockito.when(usuarioService.obtenerPorId(1L)).thenReturn(Optional.of(usuarioPrueba));
@@ -68,7 +66,6 @@ public class UsuarioControllerTest {
                 .andExpect(jsonPath("$.email").value("benja@test.com"));
     }
 
-    // 3. TEST CREAR
     @Test
     void testCrear() throws Exception {
         Mockito.when(usuarioService.guardar(any(Usuario.class))).thenReturn(usuarioPrueba);
@@ -79,7 +76,6 @@ public class UsuarioControllerTest {
                 .andExpect(jsonPath("$.id_usuario").value(1));
     }
 
-    // 4. TEST ACTUALIZAR (PUT)
     @Test
     void testActualizar() throws Exception {
         Mockito.when(usuarioService.obtenerPorId(1L)).thenReturn(Optional.of(usuarioPrueba));
@@ -91,7 +87,6 @@ public class UsuarioControllerTest {
                 .andExpect(status().isOk());
     }
 
-    // 5. TEST MODIFICAR ROL (PATCH)
     @Test
     void testModificarRol() throws Exception {
         Mockito.when(usuarioService.obtenerPorId(1L)).thenReturn(Optional.of(usuarioPrueba));
@@ -103,7 +98,6 @@ public class UsuarioControllerTest {
                 .andExpect(status().isOk());
     }
 
-    // 6. TEST ELIMINAR
     @Test
     void testEliminar() throws Exception {
         Mockito.doNothing().when(usuarioService).eliminar(1L);
@@ -111,7 +105,6 @@ public class UsuarioControllerTest {
                 .andExpect(status().isNoContent());
     }
 
-    // 7. TEST LOGIN
     @Test
     void testLogin() throws Exception {
         Mockito.when(usuarioService.autenticar("benja@test.com", "123456"))
