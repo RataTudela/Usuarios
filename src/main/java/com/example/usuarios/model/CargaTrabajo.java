@@ -2,6 +2,7 @@ package com.example.usuarios.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,4 +26,7 @@ public class CargaTrabajo {
     private Usuario usuario;    
     private Integer horas_asignadas;
     private String nombreTarea;
+
+    @Column(name = "id_tarea")
+    private Long idTarea;
 }
