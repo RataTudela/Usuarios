@@ -2,6 +2,10 @@ package com.example.usuarios.controller;
 
 import java.util.List;
 
+import java.util.Map;
+import java.util.HashMap;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import com.example.usuarios.config.RabbitMqConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.PatchMapping;
 import com.example.usuarios.model.CargaTrabajo;
 import com.example.usuarios.service.CargaTrabajoService;
 
@@ -23,6 +27,9 @@ public class CargaTrabajoController {
 
     @Autowired
     private CargaTrabajoService service;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @GetMapping
     public List<CargaTrabajo> listarTodo() {
@@ -75,4 +82,21 @@ public class CargaTrabajoController {
     public List<CargaTrabajo> consultarPorTarea(@RequestParam String nombreTarea) {
         return service.buscarPorNombreTarea(nombreTarea);
     }
+
+  @PatchMapping("/finalizar-tarea/{idTarea}/carga/{idCarga}")
+public ResponseEntity<?> finalizarTarea(@PathVariable Long idTarea, @PathVariable Long idCarga) {
+    Map<String, Object> mensaje = new HashMap<>();
+    mensaje.put("idTarea", idTarea);
+    mensaje.put("estado", "completada"); 
+
+    rabbitTemplate.convertAndSend(
+        RabbitMqConfig.EXCHANGE_USUARIOS, 
+        RabbitMqConfig.ROUTING_KEY_USUARIOS, 
+        mensaje
+    );
+
+    service.eliminar(idCarga); 
+
+    return ResponseEntity.ok().body("Tarea finalizada en Proyectos y carga liberada en Usuarios.");
+}
 }
